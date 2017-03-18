@@ -1,4 +1,4 @@
-import wiringpi2
+import wiringpi
 from epyper.enum import enum
 
 pins = enum(
@@ -56,9 +56,9 @@ def lm75a_readTemp():
     temp = [0] * 2
     t = 0
 
-    wiringpi2.wiringPiI2CWrite(gI2cFd, LM75A_CMD_TEMP)
-    temp[0] = wiringpi2.wiringPiI2CRead(gI2cFd)
-    temp[1] = wiringpi2.wiringPiI2CRead(gI2cFd)
+    wiringpi.wiringPiI2CWrite(gI2cFd, LM75A_CMD_TEMP)
+    temp[0] = wiringpi.wiringPiI2CRead(gI2cFd)
+    temp[1] = wiringpi.wiringPiI2CRead(gI2cFd)
 
     # 11 MSB bits used. Celcius is calculated as Temp data * 1/8
     t = ((temp[0] << 8) | (temp[1]))
@@ -77,17 +77,17 @@ def init():
     """
     global gI2cFd
 
-    if wiringpi2.wiringPiSetup() < 0:
+    if wiringpi.wiringPiSetup() < 0:
         print "bsp_init: failed to initialize wiringPi"
         return -1
         
-    gI2cFd = wiringpi2.wiringPiI2CSetup(LM75A_I2C_ADDR)
+    gI2cFd = wiringpi.wiringPiI2CSetup(LM75A_I2C_ADDR)
     
     if gI2cFd < 0:
         print "bsp_init: failed to initialize I2C"
         return -1
     
-    if wiringpi2.wiringPiSPISetup(0, 1000000) < 0:
+    if wiringpi.wiringPiSPISetup(0, 1000000) < 0:
         print "bsp_init: failed to initialize SPI"
         return -1
     
@@ -100,7 +100,7 @@ def getMsTicks():
        Get number of milliseconds
     
     """
-    return wiringpi2.millis() 
+    return wiringpi.millis() 
     
 #-------------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ def writeToDisplay(data):
         return
 
     #TODO: can hang here...
-    wiringpi2.wiringPiSPIDataRW(0, data)
+    wiringpi.wiringPiSPIDataRW(0, data)
 
 #-------------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ def delayMs(ms):
            [in] ms - number of milliseconds to delay
     
     """
-    wiringpi2.delay(ms)
+    wiringpi.delay(ms)
     
 #-------------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ def delayUs(us):
            [in] us - number of microseconds to delay
     
     """
-    wiringpi2.delayMicroseconds(us)
+    wiringpi.delayMicroseconds(us)
 
 #-------------------------------------------------------------------------------
 
@@ -182,7 +182,7 @@ def setPinMode(pin, mode):
     
     p = pinMap[pin]
 
-    wiringpi2.pinMode(p, m)
+    wiringpi.pinMode(p, m)
 
 
 #-------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ def pinOut(pin, value):
 
     p = pinMap[pin]
 
-    wiringpi2.digitalWrite(p, v)
+    wiringpi.digitalWrite(p, v)
     
 #-------------------------------------------------------------------------------
     
